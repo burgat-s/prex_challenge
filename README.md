@@ -1,59 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Prex Challenge - GIPHY API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API RESTful desarrollada en PHP 8.5 y Laravel 12 para interactuar con la API de GIPHY. Incluye búsqueda de GIFs, gestión de favoritos por usuario y registro de auditoría asíncrono.
 
-## About Laravel
+## Requisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Git
+- Docker y Docker Compose
+- Entorno Linux (Nativo o WSL2)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalación y Configuración
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Instalar dependencias
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php85-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
-## Learning Laravel
+### 2. Configurar alias de Sail (Opcional)
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 3. Variables de Entorno
+```bash
+cp .env.example .env
+```
+Para facilitar las pruebas se dejó la apikey de  GIPHY en el env.example. De querer usar la propia edite el archivo `.env` y añada su clave de la API de GIPHY:
+```
+GIPHY_API_KEY=ingrese_su_clave_aqui
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 4. Iniciar servicios
+```bash
+sail up -d
+```
 
-## Laravel Sponsors
+### 5. Inicializar la aplicación
+```bash
+sail artisan key:generate
+sail artisan migrate:fresh --seed
+sail artisan passport:keys --force
+sail artisan passport:client --personal --name="Prex Client"
+```
+> El usuario de prueba sembrado es `test@test.com` con la contraseña `12345678`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Ejecución de Pruebas
 
-### Premium Partners
+El proyecto utiliza una base de datos SQLite en memoria para las pruebas.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+sail test
+```
 
-## Contributing
+## Decisiones de Arquitectura
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+*   **Autenticación Stateless**: Se implementó Laravel Passport para la emisión de tokens JWT cumpliendo con el requerimiento  OAuth 2.0.
+*   **Manejo de Excepciones**: La gestión de excepciones se centraliza en el método `withExceptions` de `bootstrap/app.php` (propio de Laravel 12), permitiendo una configuración moderna para devolver respuestas JSON estandarizadas.
+*   **Data Transfer Objects (DTOs)**: Se utilizan DTOs para estandarizar y estructurar las respuestas de la API, asegurando un formato de salida consistente.
+*   **Transacciones de Base de Datos**: Para asegurar la integridad de los datos (principio ACID), operaciones críticas como el guardado de favoritos se encapsulan dentro de transacciones de base de datos.
+*   **Middleware Asíncrono para Auditoría**: El registro de actividad de la API (`ApiLog`) se ejecuta a través del método `terminate()` del middleware. Esto permite persistir los datos después de haber enviado la respuesta HTTP al cliente, minimizando la latencia.
+*   **Abstracción de Servicios Externos**: La comunicación con la API de GIPHY se abstrae mediante interfaces y el contenedor de servicios de Laravel, aplicando el Principio de Inversión de Dependencias (SOLID) para desacoplar la implementación.

@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GifController;
+use App\Http\Controllers\FavoriteController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
