@@ -56,6 +56,10 @@ El proyecto utiliza una base de datos SQLite en memoria para las pruebas.
 sail test
 ```
 
+## Colección de Postman
+
+Para facilitar la prueba de los endpoints, se incluye una colección de Postman en la raíz del proyecto. El archivo se denomina `Prex - Challenge.postman_collection.json` y contiene ejemplos de todas las peticiones disponibles en la API.
+
 ## Decisiones de Arquitectura
 
 *   **Autenticación Stateless**: Se implementó Laravel Passport para la emisión de tokens JWT cumpliendo con el requerimiento  OAuth 2.0.
@@ -64,3 +68,21 @@ sail test
 *   **Transacciones de Base de Datos**: Para asegurar la integridad de los datos (principio ACID), operaciones críticas como el guardado de favoritos se encapsulan dentro de transacciones de base de datos.
 *   **Middleware Asíncrono para Auditoría**: El registro de actividad de la API (`ApiLog`) se ejecuta a través del método `terminate()` del middleware. Esto permite persistir los datos después de haber enviado la respuesta HTTP al cliente, minimizando la latencia.
 *   **Abstracción de Servicios Externos**: La comunicación con la API de GIPHY se abstrae mediante interfaces y el contenedor de servicios de Laravel, aplicando el Principio de Inversión de Dependencias (SOLID) para desacoplar la implementación.
+
+## Diagrama de Entidad-Relación (DER)
+
+Se ha incluido un Diagrama de Entidad-Relación en la carpeta `docs` para visualizar la estructura de la base de datos. Puede consultar el archivo [DER.md](docs/DER.md) para una descripción detallada de las tablas y sus relaciones. El código del diagrama puede ser copiado y pegado en el editor online [Mermaid.live](https://mermaid.live/) para su visualización y modificación.
+
+![Diagrama de Entidad-Relación](docs/DER.png)
+
+## Diagrama de Casos de Uso
+
+Para una visión general de las funcionalidades y los actores del sistema, se ha incluido un diagrama de casos de uso en la carpeta `docs`. Puede consultar el archivo [casos de uso.md](docs/casos%20de%20uso.md) para ver el código fuente del diagrama, que también puede ser visualizado y modificado en [Mermaid.live](https://mermaid.live/).
+
+![Diagrama de Casos de Uso](docs/Casos%20de%20uso.png)
+
+## Diagrama de Secuencia
+
+Para un análisis detallado del flujo de interacciones entre los componentes del sistema, se ha incluido un diagrama de secuencia en la carpeta `docs`. Puede consultar el archivo [diagrama secuencias.md](docs/diagrama%20secuencias.md) para ver el código fuente, que también es compatible con [Mermaid.live](https://mermaid.live/).
+
+![Diagrama de Secuencia](docs/diagrama%20secuencias.png)
