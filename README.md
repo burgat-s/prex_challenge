@@ -46,7 +46,7 @@ sail artisan migrate:fresh --seed
 sail artisan passport:keys --force
 sail artisan passport:client --personal --name="Prex Client"
 ```
-> El usuario de prueba sembrado es `test@test.com` con la contraseña `12345678`.
+> El usuario de prueba sembrado es `test@test.com` con la contraseña `12345678`. Para un entorno de producción, las credenciales del usuario administrador se deben configurar en el archivo `.env` utilizando las variables `ADMIN_EMAIL` y `ADMIN_PASSWORD`.
 
 ## Ejecución de Pruebas
 
