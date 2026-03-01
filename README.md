@@ -1,12 +1,14 @@
 # Prex Challenge - GIPHY API
 
-API RESTful desarrollada en PHP 8.5 y Laravel 12 para interactuar con la API de GIPHY. Incluye búsqueda de GIFs, gestión de favoritos por usuario y registro de auditoría asíncrono.
+API RESTful desarrollada en PHP 8.4 y Laravel 12 para interactuar con la API de GIPHY. Incluye búsqueda de GIFs, gestión de favoritos por usuario y registro de auditoría asíncrono.
 
 ## Requisitos
 
 - Git
 - Docker y Docker Compose
 - Entorno Linux (Nativo o WSL2)
+
+> **Importante para usuarios de Windows:** Es crucial tener Docker Desktop iniciado. El comando de Docker inicial y todos los comandos de `sail` deben ejecutarse desde una terminal de Linux a través de WSL2.
 
 ## Instalación y Configuración
 
@@ -16,7 +18,7 @@ docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
     -w /var/www/html \
-    laravelsail/php85-composer:latest \
+    laravelsail/php84-composer:latest \
     composer install --ignore-platform-reqs
 ```
 

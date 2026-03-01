@@ -24,5 +24,17 @@ class AppServiceProvider extends ServiceProvider
     {
         Passport::tokensExpireIn(now()->addMinutes(30));
         Passport::personalAccessTokensExpireIn(now()->addMinutes(30));
+
+        if ($this->app->environment('local')) {
+            $publicKey = storage_path('oauth-public.key');
+            $privateKey = storage_path('oauth-private.key');
+
+            if (file_exists($publicKey) && file_exists($privateKey)) {
+                config([
+                    'passport.public_key' => file_get_contents($publicKey),
+                    'passport.private_key' => file_get_contents($privateKey),
+                ]);
+            }
+        }
     }
 }
